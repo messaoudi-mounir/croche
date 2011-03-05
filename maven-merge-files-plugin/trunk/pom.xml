@@ -8,7 +8,7 @@
 	<name>maven-merge-file-plugin</name>
 	<description>This is a maven mojo for merging multiple files into a
 		single target file</description>
-	<url>http://croche.googlecode.com/svn/docs/maven-merge-files-plugin/${project.version}/index.html</url>
+	<url>http://croche.googlecode.com/svn/docs/maven-merge-files-plugin/index.html</url>
 	<inceptionYear>2011</inceptionYear>
 
 	<organization>
@@ -64,7 +64,7 @@
 		</snapshotRepository>
 		<site>
 			<id>croche-googlecode</id>
-			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin/${project.version}</url>
+			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin</url>
 		</site>
 	</distributionManagement>
 
