@@ -65,9 +65,9 @@ public class MergeMojo extends AbstractMojo {
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nameContainsOrdering&gt;indices&lt;/nameContainsOrdering&gt;
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nameContainsOrdering&gt;data&lt;/nameContainsOrdering&gt;
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/nameContainsOrderings&gt;
-	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;extensions&gt;
-	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;extension&gt;.sql&lt;/extension&gt;
-	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/extensions&gt;
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;includes&gt;
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;include&gt;.sql&lt;/include&gt;
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;/includes&gt;
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;separator&gt;--- ${filename} ---&lt;/separator&gt;
 	 * &nbsp;&nbsp;&nbsp;&nbsp;&lt;encoding&gt;UTF-8&lt;/encoding&gt;
 	 * &nbsp;&nbsp;&lt;/merge&gt;
@@ -188,7 +188,7 @@ public class MergeMojo extends AbstractMojo {
 				getLog()
 						.warn("The source directory: " + sourceDir.getAbsolutePath() + " is not a directory, it wil not be included in the scanned directories");
 			} else {
-				processSourceDirectory(sourceDir, merge.getExtensions());
+				processSourceDirectory(sourceDir, merge.getIncludes());
 			}
 		}
 	}
@@ -218,10 +218,10 @@ public class MergeMojo extends AbstractMojo {
 		}
 	}
 
-	boolean fileMatchesExtensions(String fileName, String[] extensions) {
-		if (extensions != null && extensions.length > 0) {
-			for (String extension : extensions) {
-				if (fileName.endsWith(extension)) {
+	boolean fileMatches(String fileName, String[] includes) {
+		if (includes != null && includes.length > 0) {
+			for (String include : includes) {
+				if (fileName.contains(include)) {
 					return true;
 				}
 			}
@@ -230,7 +230,7 @@ public class MergeMojo extends AbstractMojo {
 		return true;
 	}
 
-	private void processSourceDirectory(File sourceDir, final String[] extensions) {
+	private void processSourceDirectory(File sourceDir, final String[] includes) {
 		getLog().info("Scanning sourced directory: " + sourceDir.getAbsolutePath() + " for files to merge...");
 		// first find matching files
 		File[] matchingFiles = sourceDir.listFiles(new FileFilter() {
@@ -242,7 +242,7 @@ public class MergeMojo extends AbstractMojo {
 			public boolean accept(File pathname) {
 				// find matching files
 				if (pathname.isFile()) {
-					if (fileMatchesExtensions(pathname.getName(), extensions)) {
+					if (fileMatches(pathname.getName(), includes)) {
 						if (pathname.canRead()) {
 							return true;
 						} else {
@@ -252,7 +252,7 @@ public class MergeMojo extends AbstractMojo {
 					} else {
 						getLog().debug(
 								"The file: " + pathname.getAbsolutePath()
-										+ " does not match the defined file extensions, it will not be included in the files to be appended.");
+										+ " does not match the defined file includes, it will not be included in the files to be appended.");
 					}
 
 				}
@@ -323,7 +323,7 @@ public class MergeMojo extends AbstractMojo {
 		// recursively process sub directories
 		if (subDirs != null) {
 			for (File subDir : subDirs) {
-				processSourceDirectory(subDir, extensions);
+				processSourceDirectory(subDir, includes);
 			}
 		}
 	}

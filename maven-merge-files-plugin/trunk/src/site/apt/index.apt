@@ -15,3 +15,48 @@ About Maven Merge Files Plugin
   where it should look for files to append
   in the plugin configuration and then run the merge goal. More specific usage
   instructions can be found on the {{{usage.html}usage page}}.
+  
+* Basic Merge Configuration Example  
+
++---+
+<project>
+  ...
+ <build>
+  <plugins>
+   <plugin>
+	<groupId>croche.maven</groupId>
+	<artifactId>maven-merge-file-plugin</artifactId>
+	<executions>
+		<execution>
+			<id>merge-release-notes</id>
+			<phase>process-resources</phase>
+			<goals>
+				<goal>merge</goal>
+			</goals>
+			<configuration>
+				<merges>
+					<merge>
+						<targetFile>docs/all-release-notes.txt</targetFile>
+						<sourceDirs>
+							<sourceDir>docs</sourceDir>
+						</sourceDirs>
+						<includes>
+							<include>release-notes.txt</include>
+						</includes>
+					</merge>
+				</merges>
+			</configuration>
+		</execution>
+	</executions>
+	</plugin>
+   </plugins>
+ </build>
+  ...
+</project>
++---+ 
+
+  The example configuration above merges release notes files in the docs directory
+  into a single release notes file all-release-notes.txt, for example if there were files called
+  component1-release-notes.txt, component2-release-notes.txt, component3-release-notes.txt in this directory
+  it would append them together.
+  
