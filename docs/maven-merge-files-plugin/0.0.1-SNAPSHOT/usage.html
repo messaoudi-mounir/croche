@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>maven-merge-file-plugin Maven Mojo - Usage</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+          <meta name="author" content="croche" />
+          </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            maven-merge-file-plugin Maven Mojo
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+            
+  
+    
+            <div class="xleft">
+        Last Published: 05 Mar 2011 16:50:42
+                  &nbsp;| Version: 0.0.1-SNAPSHOT
+                      </div>
+            <div class="xright">            <a href="http://maven.apache.org/" class="externalLink">Maven 2</a>
+            
+  
+
+  
+    
+            
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+            
+  
+    
+                   <h5>Overview</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="index.html">Introduction</a>
+          </li>
+              
+    <li class="none">
+                    <a href="plugin-info.html">Goals</a>
+          </li>
+              
+    <li class="none">
+              <strong>Usage</strong>
+        </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+            
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Usage</h2>
+<div class="section"><h3>Configuring the plugin</h3>
+<p>To start using the plugin you will need to configure the repository location for the plugin.</p>
+<div class="source"><pre>&lt;project&gt;
+  ...
+  &lt;pluginRepositories&gt;
+    &lt;pluginRepository&gt;
+      &lt;id&gt;croche-releases&lt;/id&gt;
+      &lt;url&gt;http://croche.googlecode.com/svn/repository/releases&lt;/url&gt;
+    &lt;/pluginRepository&gt;
+  &lt;/pluginRepositories&gt;
+  ...
+&lt;/project&gt;</pre>
+</div>
+<p>To configure the merged files you have to add one or more merges which represents the merge of a set of files into a single target file. * Within each <b>merge</b> you should add a <b>targetFile</b> which is the location of the end result file where all files being merged are written to. * You will also need to add one or more <b>sourceDir</b> which is the directory where it should scan for files to merge. NOTE that it will scan into not just the source directory but also all of its subdirectories too. * You can optionally add one or more <b>extension</b> which are the extensions the file name must end with in order to be included in the files that get appended. If you do not specify any extensions then it will append all files found in the source directories and their sub-directories. * If you want to add a separator to be added above each merged file then you can add a <b>separator</b>. In the separator 3 variables are supported: \n will translate into a line break in the output file, #<a name="file.name">file.name</a> will be replaced with the name of the file that is being appended into the target file, #<a name="parent.name">parent.name</a> will be replaced with the directory name containing the file that is being appended into the target file. * You can control the order that files found are appended to the target file. To do this add the <b>nameContainsOrderings</b> configuration. Each <b>nameContainsOrdering</b> defines a substring that the file name must contain to group files in order relative to each other <b>nameContainsOrdering</b> in the list. Any found files that do not match any of the <b>nameContainsOrdering</b> will be added last. For example if your list of <b>nameContainsOrderings</b> contained intro, body and footer in that order then any files with intro in their name would be appended first, followed by any files with body in their name and finally followed by any files with footer in their name. Any files that had neither intro, body or footer in their name would be appended last. * The default encoding used to read and write the files is UTF-8 but if you want to change this then you can add the <b>encoding</b> element.</p>
+<div class="source"><pre>&lt;project&gt;
+  ...
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+                                &lt;groupId&gt;croche.maven&lt;/groupId&gt;
+                                &lt;artifactId&gt;maven-merge-file-plugin&lt;/artifactId&gt;
+                                &lt;executions&gt;
+                                        &lt;execution&gt;
+                                                &lt;id&gt;merge-sql&lt;/id&gt;
+                                                &lt;phase&gt;process-resources&lt;/phase&gt;
+                                                &lt;goals&gt;
+                                                        &lt;goal&gt;merge&lt;/goal&gt;
+                                                &lt;/goals&gt;
+                                                &lt;configuration&gt;
+                                                        &lt;merges&gt;
+                                                                &lt;merge&gt;
+                                                                        &lt;targetFile&gt;/Users/conorroche/Documents/workspaceapi/maven-merge-files-plugin/target/database/install-all.sql&lt;/targetFile&gt;
+                                                                        &lt;sourceDirs&gt;
+                                                                                &lt;sourceDir&gt;/Users/conorroche/Documents/workspaceapi/maven-merge-files-plugin/target/database&lt;/sourceDir&gt;
+                                                                        &lt;/sourceDirs&gt;
+                                                                        &lt;nameContainsOrderings&gt;
+                                                                                &lt;nameContainsOrdering&gt;recreate-schema.sql&lt;/nameContainsOrdering&gt;
+                                                                                &lt;nameContainsOrdering&gt;create-schema.sql&lt;/nameContainsOrdering&gt;
+                                                                                &lt;nameContainsOrdering&gt;schema-objects&lt;/nameContainsOrdering&gt;
+                                                                                &lt;nameContainsOrdering&gt;indices&lt;/nameContainsOrdering&gt;
+                                                                                &lt;nameContainsOrdering&gt;data&lt;/nameContainsOrdering&gt;
+                                                                        &lt;/nameContainsOrderings&gt;
+                                                                        &lt;extensions&gt;
+                                                                                &lt;extension&gt;.sql&lt;/extension&gt;
+                                                                        &lt;/extensions&gt;
+                                                                        &lt;separator&gt;-- ***** SQL File: #{parent.name}/#{file.name} *****\n\n&lt;/separator&gt;
+                                                                        &lt;encoding&gt;UTF-8&lt;/encoding&gt;
+                                                                &lt;/merge&gt;
+                                                        &lt;/merges&gt;
+                                                &lt;/configuration&gt;
+                                        &lt;/execution&gt;
+                                &lt;/executions&gt;
+                        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+  ...
+&lt;/project&gt;</pre>
+</div>
+<p>The example configuration above merges any SQL files in the /Users/conorroche/Documents/workspaceapi/maven-merge-files-plugin/target/database and any of its subdirectories into a single SQL file /Users/conorroche/Documents/workspaceapi/maven-merge-files-plugin/target/database/install-all.sql. It would first append any files with recreate-schema.sql in their name, followed by create-schema.sql in their name, followed by schema-objects in their name, followed by indices in their name and finally followed by data in their name. It adds a SQL comment at the top of each appended file. I use this where I have several EAR projects that main their own SQL scripts for creating a schema that they use. Within each of these projects they have a script to drop/create the database schema, the objects (tables, views, functions, procedures), additional column indices, and some initial static data. The configuration above merges them into a single install SQL script that I can use to setup the database from scratch where I want the drop/create schema queries to run first, followed by the create tables, then the create indices and finally the static data inserts.</p>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2011
+    
+          Conor Roche
+          
+  
+
+  
+    
+            
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
