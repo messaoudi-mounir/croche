@@ -64,7 +64,7 @@
 		</snapshotRepository>
 		<site>
 			<id>croche-googlecode</id>
-			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin</url>
+			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin/site</url>
 		</site>
 	</distributionManagement>
 
