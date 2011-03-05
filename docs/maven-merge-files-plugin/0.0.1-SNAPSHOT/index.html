@@ -13,7 +13,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>maven-merge-file-plugin Maven Mojo - Introduction</title>
+    <title>maven-merge-file-plugin - Introduction</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -26,7 +26,7 @@
     <div id="banner">
                     <span id="bannerLeft">
     
-            maven-merge-file-plugin Maven Mojo
+            maven-merge-file-plugin
     
             </span>
                     <div class="clear">
@@ -43,7 +43,7 @@
   
     
             <div class="xleft">
-        Last Published: 05 Mar 2011 16:50:42
+        Last Published: 05 Mar 2011 17:59:35
                   &nbsp;| Version: 0.0.1-SNAPSHOT
                       </div>
             <div class="xright">            <a href="http://maven.apache.org/" class="externalLink">Maven 2</a>
@@ -193,6 +193,44 @@
       <div id="contentBox">
         <div class="section"><h2>About Maven Merge Files Plugin</h2>
 <p>The Merge Files plugin merges multiple files into one. It supports scanning directories for the files to append and also supports an optional ordering for how the files are appended. You can also specify a separator to be added between each appended file. To use, specify the target file that files are to be merged into and one or more source directory(s) where it should look for files to append in the plugin configuration and then run the merge goal. More specific usage instructions can be found on the <a href="usage.html">usage page</a>.</p>
+<div class="section"><h3>Basic Merge Configuration Example </h3>
+<div class="source"><pre>&lt;project&gt;
+  ...
+ &lt;build&gt;
+  &lt;plugins&gt;
+   &lt;plugin&gt;
+        &lt;groupId&gt;croche.maven&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-merge-file-plugin&lt;/artifactId&gt;
+        &lt;executions&gt;
+                &lt;execution&gt;
+                        &lt;id&gt;merge-release-notes&lt;/id&gt;
+                        &lt;phase&gt;process-resources&lt;/phase&gt;
+                        &lt;goals&gt;
+                                &lt;goal&gt;merge&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                                &lt;merges&gt;
+                                        &lt;merge&gt;
+                                                &lt;targetFile&gt;docs/all-release-notes.txt&lt;/targetFile&gt;
+                                                &lt;sourceDirs&gt;
+                                                        &lt;sourceDir&gt;docs&lt;/sourceDir&gt;
+                                                &lt;/sourceDirs&gt;
+                                                &lt;includes&gt;
+                                                        &lt;include&gt;release-notes.txt&lt;/include&gt;
+                                                &lt;/includes&gt;
+                                        &lt;/merge&gt;
+                                &lt;/merges&gt;
+                        &lt;/configuration&gt;
+                &lt;/execution&gt;
+        &lt;/executions&gt;
+        &lt;/plugin&gt;
+   &lt;/plugins&gt;
+ &lt;/build&gt;
+  ...
+&lt;/project&gt;</pre>
+</div>
+<p>The example configuration above merges release notes files in the docs directory into a single release notes file all-release-notes.txt, for example if there were files called component1-release-notes.txt, component2-release-notes.txt, component3-release-notes.txt in this directory it would append them together.</p>
+</div>
 </div>
 
       </div>
