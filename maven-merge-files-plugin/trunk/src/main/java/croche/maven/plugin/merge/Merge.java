@@ -14,7 +14,7 @@ package croche.maven.plugin.merge;
 
 import java.io.File;
 import java.util.Arrays;
-
+ 
 /**
  * The Merge represents a POJO to hold the merge configuration for a set of files
  * @version $Id$
