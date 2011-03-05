@@ -4,7 +4,7 @@
 	<groupId>croche.maven</groupId>
 	<artifactId>maven-merge-file-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>maven-merge-file-plugin</name>
 	<description>This is a maven mojo for merging multiple files into a single target file</description>
 	<url>http://croche.googlecode.com/svn/docs/maven-merge-files-plugin/${project.version}/index.html</url>
