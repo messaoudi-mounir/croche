@@ -9,7 +9,7 @@
 	<description>This is a maven mojo for merging multiple files into a single target file</description>
 	<url>http://code.google.com/p/croche/maven-merge-files-plugin</url>
 	<inceptionYear>2011</inceptionYear>
-	
+
 	<organization>
 		<name>Conor Roche</name>
 		<url>http://code.google.com/p/croche/</url>
@@ -45,7 +45,12 @@
 		<developerConnection>scm:svn:https://croche.googlecode.com/svn/maven-merge-files-plugin</developerConnection>
 		<url>http://code.google.com/p/croche/source/browse/#svn/maven-merge-files-plugin</url>
 	</scm>
-	
+
+	<prerequisites>
+		<maven>2.0.9</maven>
+	</prerequisites>
+
+
 	<distributionManagement>
 		<repository>
 			<id>croche-googlecode</id>
@@ -61,14 +66,14 @@
 			<url>svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin/${project.version}</url>
 		</site>
 	</distributionManagement>
-	
+
 	<repositories>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
 	</repositories>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -109,8 +114,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
-	
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -130,7 +135,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<extensions>
 			<extension>
@@ -139,7 +144,7 @@
 				<version>1.9</version>
 			</extension>
 		</extensions>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -155,7 +160,7 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
