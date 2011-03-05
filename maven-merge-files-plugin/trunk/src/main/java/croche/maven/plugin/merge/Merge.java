@@ -22,19 +22,32 @@ import java.util.Arrays;
  */
 public class Merge {
 
+	private File targetFile;
+	private File[] sourceDirs;
+	private String[] nameContainsOrderings;
+	private String[] includes;
+	private String separator;
+	private String encoding;
+
 	/**
 	 * The target file that the files in this merge will be merged into
 	 * @parameter
 	 * @required
+	 * @return the targetFile
 	 */
-	private File targetFile;
+	public File getTargetFile() {
+		return this.targetFile;
+	}
 
 	/**
 	 * The source directories where it will scan for files, it will look in these directories and all of their subdirectories
 	 * @parameter
 	 * @required
+	 * @return the sourceDirs The source directories to scan for files in
 	 */
-	private File[] sourceDirs;
+	public File[] getSourceDirs() {
+		return this.sourceDirs;
+	}
 
 	/**
 	 * This is an optional set of strings that file names can contain that control the ordering of files merged into the final output file.
@@ -43,70 +56,41 @@ public class Merge {
 	 * then files whose name contained schema-objects, then files whose names contained indices and finally files whose names contained data would get appended.
 	 * @parameter
 	 */
-	private String[] nameContainsOrderings;
-
-	/**
-	 * This is an optional set of file extensions to look for, matching files must end with one of these values
-	 * @parameter
-	 */
-	private String[] extensions;
-
-	/**
-	 * This is an optional separator output between merged files in the combined file
-	 * @parameter
-	 */
-	private String separator;
-
-	/**
-	 * This is an optional encoding to use when reading/writing the files being merged, if not specified
-	 * then UTF-8 will be used
-	 * @parameter
-	 */
-	private String encoding;
-
-	/**
-	 * This gets the targetFile
-	 * @return the targetFile
-	 */
-	public File getTargetFile() {
-		return this.targetFile;
-	}
-
-	/**
-	 * This gets the sourceDirs
-	 * @return the sourceDirs
-	 */
-	public File[] getSourceDirs() {
-		return this.sourceDirs;
-	}
-
-	/**
-	 * This gets the nameContainsOrderings
-	 * @return the nameContainsOrderings
-	 */
 	public String[] getNameContainsOrderings() {
 		return this.nameContainsOrderings;
 	}
 
 	/**
-	 * This gets the extensions
-	 * @return the extensions
+	 * This is an optional set of file includes to look for, matching files name must contain one of these values,
+	 * if not specified then all files found will be merged into the target file
+	 * @parameter
+	 * @return The substrings that matching files name must contain
 	 */
-	public String[] getExtensions() {
-		return this.extensions;
+	public String[] getIncludes() {
+		return this.includes;
 	}
 
 	/**
-	 * This gets the separator
-	 * @return the separator
+	 * <pre>
+	 * This is an optional separator output above merged files in the combined file.
+	 * In the separator 3 variables are supported: 
+	 * 1. \n will translate into a line break in the output file, 
+	 * 2. #{file.name} will be replaced with the name of the file that is being appended into the target file, 
+	 * 3. #{parent.name} will be replaced with the directory name containing the file that is being appended into
+	 * the target file.
+	 * </pre>
+	 * @parameter
+	 * @return the separator to use above files
 	 */
 	public String getSeparator() {
 		return this.separator;
 	}
 
 	/**
-	 * This gets the encoding
-	 * @return the encoding
+	 * This is an optional encoding to use when reading/writing the files being merged, if not specified
+	 * then UTF-8 will be used
+	 * @parameter
+	 * @return the encoding to use for reading/writing files
 	 */
 	public String getEncoding() {
 		return this.encoding;
@@ -119,9 +103,9 @@ public class Merge {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Merge [encoding=").append(this.encoding).append(", extensions=").append(Arrays.toString(this.extensions)).append(
-				", nameContainsOrderings=").append(Arrays.toString(this.nameContainsOrderings)).append(", separator=").append(this.separator).append(
-				", sourceDirs=").append(Arrays.toString(this.sourceDirs)).append(", targetFile=").append(this.targetFile).append("]");
+		builder.append("Merge [encoding=").append(this.encoding).append(", includes=").append(Arrays.toString(this.includes))
+				.append(", nameContainsOrderings=").append(Arrays.toString(this.nameContainsOrderings)).append(", separator=").append(this.separator).append(
+						", sourceDirs=").append(Arrays.toString(this.sourceDirs)).append(", targetFile=").append(this.targetFile).append("]");
 		return builder.toString();
 	}
 
