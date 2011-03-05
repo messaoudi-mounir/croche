@@ -6,7 +6,8 @@
 	<packaging>maven-plugin</packaging>
 	<version>0.2.1-SNAPSHOT</version>
 	<name>maven-merge-file-plugin</name>
-	<description>This is a maven mojo for merging multiple files into a single target file</description>
+	<description>This is a maven mojo for merging multiple files into a
+		single target file</description>
 	<url>http://croche.googlecode.com/svn/docs/maven-merge-files-plugin/${project.version}/index.html</url>
 	<inceptionYear>2011</inceptionYear>
 
@@ -116,6 +117,7 @@
 	</properties>
 
 
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -137,6 +139,25 @@
 	</dependencies>
 
 	<build>
+
+		<!-- For scm deployment -->
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-scm</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-manager-plexus</artifactId>
+				<version>1.0</version>
+			</extension>
+			<extension>
+				<groupId>org.apache.maven.scm</groupId>
+				<artifactId>maven-scm-provider-svnexe</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions>
 
 		<plugins>
 			<plugin>
