@@ -1,0 +1,17 @@
+  ------
+  Introduction
+  ------
+  croche
+  ------
+  5th March 2011
+  ------
+
+About Maven Merge Files Plugin
+
+  The Merge Files plugin merges multiple files into one. It
+  supports scanning directories for the files to append and also supports an optional ordering for
+  how the files are appended. You can also specify a separator to be added between each appended file.
+  To use, specify the target file that files are to be merged into and one or more source directory(s) 
+  where it should look for files to append
+  in the plugin configuration and then run the merge goal. More specific usage
+  instructions can be found on the {{{usage.html}usage page}}.
