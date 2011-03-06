@@ -4,10 +4,11 @@
   <artifactId>maven-merge-file-plugin</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <versioning>
-    <latest>0.0.1-SNAPSHOT</latest>
+    <latest>0.1-SNAPSHOT</latest>
     <versions>
       <version>0.0.1-SNAPSHOT</version>
+      <version>0.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20110305153727</lastUpdated>
+    <lastUpdated>20110306125649</lastUpdated>
   </versioning>
 </metadata>
