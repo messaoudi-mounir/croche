@@ -48,7 +48,7 @@
 	</scm>
 
 	<prerequisites>
-		<maven>2.0.9</maven>
+		<maven>2.1.0</maven>
 	</prerequisites>
 
 
@@ -64,7 +64,7 @@
 		</snapshotRepository>
 		<site>
 			<id>croche-googlecode</id>
-			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin/site</url>
+			<url>scm:svn:https://croche.googlecode.com/svn/docs/maven-merge-files-plugin</url>
 		</site>
 	</distributionManagement>
 
@@ -145,17 +145,17 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-scm</artifactId>
-				<version>1.0-beta-6</version>
+				<version>1.0-beta-7</version>
 			</extension>
 			<extension>
 				<groupId>org.apache.maven.scm</groupId>
 				<artifactId>maven-scm-manager-plexus</artifactId>
-				<version>1.0</version>
+				<version>1.4</version>
 			</extension>
 			<extension>
 				<groupId>org.apache.maven.scm</groupId>
 				<artifactId>maven-scm-provider-svnexe</artifactId>
-				<version>1.0</version>
+				<version>1.4</version>
 			</extension>
 		</extensions>
 
