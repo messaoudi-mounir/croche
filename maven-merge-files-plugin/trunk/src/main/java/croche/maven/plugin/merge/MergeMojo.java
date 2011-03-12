@@ -145,7 +145,7 @@ public class MergeMojo extends AbstractMojo {
 								getLog().debug("Appending separator: " + replaced);
 								IOUtils.copy(new StringReader(replaced), output);
 							}
-							// addd file contents
+							// add file contents
 							IOUtils.copy(input, output, encoding);
 						} catch (IOException ioe) {
 							throw new MojoExecutionException("Failed to append file: " + fileName + " to output file", ioe);
@@ -156,6 +156,7 @@ public class MergeMojo extends AbstractMojo {
 					}
 				}
 			}
+			output.flush();
 		} catch (IOException ioe) {
 			throw new MojoExecutionException("Failed to open stream file to output file: " + merge.getTargetFile().getAbsolutePath(), ioe);
 		} finally {
