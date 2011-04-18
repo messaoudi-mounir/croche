@@ -9,6 +9,7 @@
  */
 package croche.maven.plugin.version;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -41,6 +42,14 @@ public class VersionMojo extends AbstractMojo {
 	 */
 	VersionConfig versionConfig;
 	
+	/**
+     * @parameter expression="${session}"
+     * @readonly
+     * @required
+     * @since 2.0
+     */
+    protected MavenSession session;
+	
 	/** 
 	 * {@inheritDoc}
 	 * @see org.apache.maven.plugin.Mojo#execute()
@@ -53,16 +62,18 @@ public class VersionMojo extends AbstractMojo {
 		String releaseVersion = versionGen.generateReleaseVersion(this.versionConfig, currentVersion);
 		// set the system property for the release plugin
 		if(releaseVersion != null){
-			getLog().info("Setting sys property releaseVersion to : " + releaseVersion);
+			getLog().info("Setting sys & exec env property releaseVersion to: " + releaseVersion);
 			System.setProperty("releaseVersion", releaseVersion);
+			this.session.getExecutionProperties().setProperty("releaseVersion", releaseVersion);
 		} else {
 			getLog().info("Not setting releaseVersion.");
 		}
 		String developmentVersion = versionGen.generateDevelopmentVersion(this.versionConfig, currentVersion);
 		// set the system property for the release plugin
 		if(developmentVersion != null){
-			getLog().info("Setting sys property developmentVersion to : " + developmentVersion);
-			System.setProperty("developmentVersion", developmentVersion);			
+			getLog().info("Setting sys & exec env property developmentVersion to: " + developmentVersion);
+			System.setProperty("developmentVersion", developmentVersion);
+			this.session.getExecutionProperties().setProperty("developmentVersion", developmentVersion);
 		} else {
 			getLog().info("Not setting developmentVersion.");
 		}
