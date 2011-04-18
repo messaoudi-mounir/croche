@@ -39,9 +39,18 @@ Usage
   then it defaults to the first group.
   
   * <<devVersionReplacement>> This is the replacement value to be used for the dev version group, if not set it defaults to the special value INCREMENT which
-  means that the value of the number identified as the devVersionGroup will get incremented. 
+  means that the value of the number identified as the devVersionGroup will get incremented. It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
   
+  * <<releaseVersionRegex>> This is required if you want a custom release version to be used. This is the regular expression that identifies
+  the groups in the current version of the artifact. If this is not set then the plugin will NOT set the releaseVersion system
+  property meaning the maven release plugin will behave in the default manner.
   
+  * <<releaseVersionGroup>> This is used to identify the number of the group (1 -n) in the release version regex pattern that will get replaced, if this is not set
+  then it defaults to the first group.
+  
+  * <<releaseVersionReplacement>> This is the replacement string to use for the regex group identified by releaseVersionGroup, this is optional
+  and if NOT specified it defaults to empty meaning it would get replaced with an empty string.
+  It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
   
 
 * Incrementing the middle version number Example:  
