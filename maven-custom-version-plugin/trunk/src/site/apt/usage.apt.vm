@@ -31,7 +31,7 @@ Usage
   To configure the development and/or release versions used you can use the following settings within the <<versionConfig>> element:
   
   * <<devVersionRegex>> This is required if you want a custom development version to be used. This is the regular expression that identifies
-  the groups in the current version of the artifact, for example <<devVersionRegex>>.*(\d+)[^0-9]+(\d+)[^0-9]+(\d+).*<</devVersionRegex>> would
+  the groups in the current version of the artifact, for example <devVersionRegex>.*(\d+)[^0-9]+(\d+)[^0-9]+(\d+).*</devVersionRegex> would
   identify 3 groups for each number in a 3 number artifact version. If this is not set then the plugin will NOT set the developmentVersion system
   property meaning the maven release plugin will behave in the default manner.
   
