@@ -43,8 +43,8 @@ public class VersionGeneratorImpl implements VersionGenerator {
 	 * @see croche.maven.plugin.version.VersionGenerator#generateReleaseVersion(croche.maven.plugin.version.VersionConfig, java.lang.String)
 	 */
 	public String generateReleaseVersion(VersionConfig config, String currentVersion) {
-		if (config.getDevVersionRegex() != null && config.getDevVersionRegex().length() > 0) {
-			if (config.getDevVersionGroup() < 1) {
+		if (config.getReleaseVersionRegex() != null && config.getReleaseVersionRegex().length() > 0) {
+			if (config.getReleaseVersionGroup() < 1) {
 				throw new IllegalArgumentException("The release version group index must be >= 1");
 			}
 			return replaceVersion(currentVersion, config.getReleaseVersionGroup(), config.getReleaseVersionRegex(), config.getReleaseVersionReplacement());
