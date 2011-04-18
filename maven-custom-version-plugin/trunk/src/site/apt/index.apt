@@ -11,7 +11,7 @@ About Maven Custom Version Plugin
   The Maven Custom Version works in conjunction with the Maven Release Plugin to give you custom release and development versions when releasing an artifact.
   It supports using a regex pattern to choose which portion of a version will get incremented for the next development version.
   It also allows you to specify a release version that can use system properties as the replacement. 
-  More specific usage instructions can be found on the {{{usage.html}usage page}}.
+  More specific usage instructions can be found on the {{{./usage.html}usage page}}.
   
 * Basic Custom Version Configuration Example  
 
