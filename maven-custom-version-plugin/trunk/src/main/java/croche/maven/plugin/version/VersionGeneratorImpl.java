@@ -87,6 +87,8 @@ public class VersionGeneratorImpl implements VersionGenerator {
 										+ " was not a valid integer and could not be incremented.");
 							}
 							sb.append(nextVersion);
+						} else if(replacement.equals(VersionConfig.GROUP_TEXT)){
+							sb.append(groupText);
 						} else {
 							sb.append(replacement);
 						}

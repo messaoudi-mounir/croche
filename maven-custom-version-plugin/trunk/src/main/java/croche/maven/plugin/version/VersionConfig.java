@@ -25,6 +25,11 @@ public class VersionConfig {
 	 */
 	public static final String INCREMENT = "INCREMENT";
 	
+	/**
+	 * This is the keyword that means a group will have its value left as its group text
+	 */
+	public static final String GROUP_TEXT = "GROUP_TEXT";
+	
 	String devVersionRegex;
 	Integer devVersionGroup;
 	String devVersionReplacement;
@@ -68,9 +73,11 @@ public class VersionConfig {
 	
 	/**
 	 * This is the replacement string to use for the regex group identified by devVersionGroup, this is optional
-	 * and if NOT specified it defaults to INCREMENT which means it will increment the number identified by the devVersionGroup
+	 * and if NOT specified it defaults to INCREMENT which means it will increment the number identified by the devVersionGroup.
+	 * It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
 	 * @return This is the replacement string to use for the regex group identified by devVersionGroup, this is optional
-	 * and if NOT specified it defaults to INCREMENT which means it will increment the number identified by the devVersionGroup
+	 * and if NOT specified it defaults to INCREMENT which means it will increment the number identified by the devVersionGroup.
+	 * It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
 	 * @parameter
 	 */
 	public String getDevVersionReplacement() {
@@ -115,9 +122,11 @@ public class VersionConfig {
 	
 	/**
 	 * This is the replacement string to use for the regex group identified by releaseVersionGroup, this is optional
-	 * and if NOT specified it defaults to empty meaning it would get replaced with an empty string
+	 * and if NOT specified it defaults to empty meaning it would get replaced with an empty string.
+	 * It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
 	 * @return This is the replacement string to use for the regex group identified by releaseVersionGroup, this is optional
-	 * and if NOT specified it defaults to empty meaning it would get replaced with an empty string
+	 * and if NOT specified it defaults to empty meaning it would get replaced with an empty string.
+	 * It may be set to GROUP_TEXT which means it will be set to the current value of the group and hence not replaced.
 	 * @parameter
 	 */
 	public String getReleaseVersionReplacement() {
