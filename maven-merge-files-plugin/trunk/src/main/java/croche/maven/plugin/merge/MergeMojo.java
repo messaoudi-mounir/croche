@@ -12,14 +12,8 @@
  */
 package croche.maven.plugin.merge;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +25,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Goal which merges text files from a series of directories into a single text output file
@@ -175,7 +175,7 @@ public class MergeMojo extends AbstractMojo {
 	 * files
 	 * @param merge
 	 */
-	private void scanDirectories(Merge merge) {
+	private void scanDirectories(Merge merge) throws MojoExecutionException {
 		this.orderedFiles = new HashMap<String, List<File>>(this.orderingNames.size());
 
 		// find all the files that are in the source directories and add to the appropriate list based on the file name
@@ -189,7 +189,7 @@ public class MergeMojo extends AbstractMojo {
 				getLog()
 						.warn("The source directory: " + sourceDir.getAbsolutePath() + " is not a directory, it wil not be included in the scanned directories");
 			} else {
-				processSourceDirectory(sourceDir, merge.getIncludes());
+				processSourceDirectory(sourceDir, merge);
 			}
 		}
 	}
@@ -219,50 +219,22 @@ public class MergeMojo extends AbstractMojo {
 		}
 	}
 
-	boolean fileMatches(String fileName, String[] includes) {
-		if (includes != null && includes.length > 0) {
-			for (String include : includes) {
-				if (fileName.contains(include)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		return true;
-	}
-
-	private void processSourceDirectory(File sourceDir, final String[] includes) {
+	@SuppressWarnings("unchecked")
+	private void processSourceDirectory(File sourceDir, Merge merge) throws MojoExecutionException {
 		getLog().info("Scanning sourced directory: " + sourceDir.getAbsolutePath() + " for files to merge...");
+
+		String including = merge.getIncludesCSV();
+		String excluding = merge.getExcludesCSV();
+
 		// first find matching files
-		File[] matchingFiles = sourceDir.listFiles(new FileFilter() {
+		List<File> matchingFiles;
+		try {
+			matchingFiles = FileUtils.getFiles(sourceDir, including, excluding);
+		} catch (IOException ioe) {
+			throw new MojoExecutionException("Failed to find matching files of the source dir: " + sourceDir.getAbsolutePath(), ioe);
+		}
 
-			/**
-			 * {@inheritDoc}
-			 * @see java.io.FileFilter#accept(java.io.File)
-			 */
-			public boolean accept(File pathname) {
-				// find matching files
-				if (pathname.isFile()) {
-					if (fileMatches(pathname.getName(), includes)) {
-						if (pathname.canRead()) {
-							return true;
-						} else {
-							getLog().warn("The file: " + pathname.getAbsolutePath() + " can not be read, it will not be included in the files to be appended.");
-							return false;
-						}
-					} else {
-						getLog().debug(
-								"The file: " + pathname.getAbsolutePath()
-										+ " does not match the defined file includes, it will not be included in the files to be appended.");
-					}
-
-				}
-				return false;
-			}
-
-		});
-
-		int numFiles = matchingFiles == null ? 0 : matchingFiles.length;
+		int numFiles = matchingFiles == null ? 0 : matchingFiles.size();
 		getLog().info("Sourced directory: " + sourceDir.getAbsolutePath() + " contains " + numFiles + " files to merge.");
 
 		// add the sql files to the appropriate list for ordering
@@ -295,38 +267,6 @@ public class MergeMojo extends AbstractMojo {
 			}
 		}
 
-		// now find sub directories
-		File[] subDirs = sourceDir.listFiles(new FileFilter() {
-
-			/**
-			 * {@inheritDoc}
-			 * @see java.io.FileFilter#accept(java.io.File)
-			 */
-			public boolean accept(File pathname) {
-				// return dirs
-				if (pathname.isDirectory()) {
-					if (pathname.canRead()) {
-						return true;
-					} else {
-						getLog().warn(
-								"The directory: " + pathname.getAbsolutePath() + " can not be read, it will not be included in the directories to be scanned.");
-						return false;
-					}
-				}
-				return false;
-			}
-
-		});
-
-		numFiles = subDirs == null ? 0 : subDirs.length;
-		getLog().debug("Sourced directory: " + sourceDir.getAbsolutePath() + " contains " + numFiles + " sub directories to scan.");
-
-		// recursively process sub directories
-		if (subDirs != null) {
-			for (File subDir : subDirs) {
-				processSourceDirectory(subDir, includes);
-			}
-		}
 	}
 
 }

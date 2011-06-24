@@ -14,7 +14,12 @@ package croche.maven.plugin.merge;
 
 import java.io.File;
 import java.util.Arrays;
-   
+import java.util.Collection;
+import java.util.LinkedHashSet;
+
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * The Merge represents a POJO to hold the merge configuration for a set of files
  * @version $Id$
@@ -26,6 +31,7 @@ public class Merge {
 	private File[] sourceDirs;
 	private String[] nameContainsOrderings;
 	private String[] includes;
+	private String[] excludes;
 	private String separator;
 	private String encoding;
 
@@ -55,6 +61,7 @@ public class Merge {
 	 * appended,
 	 * then files whose name contained schema-objects, then files whose names contained indices and finally files whose names contained data would get appended.
 	 * @parameter
+	 * @return The set of strings that file names can contain that control the ordering of files merged into the final output file.
 	 */
 	public String[] getNameContainsOrderings() {
 		return this.nameContainsOrderings;
@@ -68,6 +75,14 @@ public class Merge {
 	 */
 	public String[] getIncludes() {
 		return this.includes;
+	}
+
+	/**
+	 * This is an optional set of file excludes to use, for a file to be included it must not match one of this excludes if specified
+	 * @return the optional set of file excludes to use, for a file to be included it must not match one of this excludes if specified
+	 */
+	public String[] getExcludes() {
+		return this.excludes;
 	}
 
 	/**
@@ -94,6 +109,35 @@ public class Merge {
 	 */
 	public String getEncoding() {
 		return this.encoding;
+	}
+
+	/**
+	 * Gets the comma separated list of effective include patterns.
+	 * @return The comma separated list of effective include patterns, never <code>null</code>.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getIncludesCSV() {
+		Collection patterns = new LinkedHashSet();
+		if (getIncludes() != null) {
+			patterns.addAll(Arrays.asList(getIncludes()));
+		}
+		if (patterns.isEmpty()) {
+			patterns.add("**/*");
+		}
+		return StringUtils.join(patterns.iterator(), ",");
+	}
+
+	/**
+	 * Gets the comma separated list of effective exclude patterns.
+	 * @return The comma separated list of effective exclude patterns, never <code>null</code>.
+	 */
+	@SuppressWarnings("unchecked")
+	public String getExcludesCSV() {
+		Collection patterns = new LinkedHashSet(FileUtils.getDefaultExcludesAsList());
+		if (getExcludes() != null) {
+			patterns.addAll(Arrays.asList(getExcludes()));
+		}
+		return StringUtils.join(patterns.iterator(), ",");
 	}
 
 	/**
