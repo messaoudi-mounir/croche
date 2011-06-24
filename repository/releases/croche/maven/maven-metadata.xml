@@ -6,5 +6,10 @@
       <prefix>custom-version</prefix>
       <artifactId>maven-custom-version-plugin</artifactId>
     </plugin>
+    <plugin>
+      <name>maven-merge-file-plugin</name>
+      <prefix>merge-file</prefix>
+      <artifactId>maven-merge-file-plugin</artifactId>
+    </plugin>
   </plugins>
 </metadata>
