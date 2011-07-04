@@ -23,8 +23,10 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -81,6 +83,7 @@ public class MergeMojo extends AbstractMojo {
 	private Map<String, List<File>> orderedFiles;
 	private boolean useOrdering;
 	private List<String> orderingNames;
+	private Set<String> addedFiles;
 
 	/**
 	 * @see org.apache.maven.plugin.AbstractMojo#execute()
@@ -177,6 +180,7 @@ public class MergeMojo extends AbstractMojo {
 	 */
 	private void scanDirectories(Merge merge) throws MojoExecutionException {
 		this.orderedFiles = new HashMap<String, List<File>>(this.orderingNames.size());
+		this.addedFiles = new HashSet<String>();
 
 		// find all the files that are in the source directories and add to the appropriate list based on the file name
 		File[] sourceDirs = merge.getSourceDirs();
@@ -263,7 +267,16 @@ public class MergeMojo extends AbstractMojo {
 					this.orderedFiles.put(DEFAULT_ORDERING_NAME, targetList);
 				}
 
-				targetList.add(file);
+				// dont add the same file twice unless configured to do so
+				if (merge.isDuplicatesAllowed()) {
+					targetList.add(file);
+				} else {
+
+					if (!this.addedFiles.contains(file.getAbsolutePath())) {
+						this.addedFiles.add(file.getAbsolutePath());
+						targetList.add(file);
+					}
+				}
 			}
 		}
 

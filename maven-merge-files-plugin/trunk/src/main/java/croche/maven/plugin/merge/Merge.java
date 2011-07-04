@@ -34,6 +34,7 @@ public class Merge {
 	private String[] excludes;
 	private String separator;
 	private String encoding;
+	private boolean duplicatesAllowed = false;
 
 	/**
 	 * The target file that the files in this merge will be merged into
@@ -99,6 +100,26 @@ public class Merge {
 	 */
 	public String getSeparator() {
 		return this.separator;
+	}
+
+	/**
+	 * This is whether the same file can be allowed twice which can happen if a top level and child directory
+	 * are used in the set of directories to scan for files, default is false
+	 * @return This is whether the same file can be allowed twice which can happen if a top level and child directory
+	 *         are used in the set of directories to scan for files, default is false
+	 */
+	public boolean isDuplicatesAllowed() {
+		return this.duplicatesAllowed;
+	}
+
+	/**
+	 * This sets whether the same file can be allowed twice which can happen if a top level and child directory
+	 * are used in the set of directories to scan for files, default is false
+	 * @param duplicatesAllowed whether the same file can be allowed twice which can happen if a top level and child directory
+	 *            are used in the set of directories to scan for files, default is false
+	 */
+	public void setDuplicatesAllowed(boolean duplicatesAllowed) {
+		this.duplicatesAllowed = duplicatesAllowed;
 	}
 
 	/**
