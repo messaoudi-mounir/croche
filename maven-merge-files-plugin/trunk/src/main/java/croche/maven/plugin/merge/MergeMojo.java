@@ -140,11 +140,17 @@ public class MergeMojo extends AbstractMojo {
 							input = new FileInputStream(file);
 
 							// add separator if present
-							if (merge.getSeparator() != null && merge.getSeparator().length() > 0) {
-								// #{parent.name}/#{file.name}
-								String replaced = merge.getSeparator().replace("#{file.name}", fileName);
+							if (merge.getSeparator() != null && merge.getSeparator().trim().length() > 0) {
+								String replaced = merge.getSeparator().trim();
+								// remove any line breaks and tabs due to xml formatting
+								replaced = replaced.replace("\n", "");
+								replaced = replaced.replace("\t", "");
+								// replace the file name and parent name variables
+								replaced = replaced.replace("#{file.name}", fileName);
 								replaced = replaced.replace("#{parent.name}", file.getParentFile() != null ? file.getParentFile().getName() : "");
+								// add in any requested line breaks and tabs
 								replaced = replaced.replace("\\n", "\n");
+								replaced = replaced.replace("\\t", "\t");
 								getLog().debug("Appending separator: " + replaced);
 								IOUtils.copy(new StringReader(replaced), output);
 							}
@@ -190,8 +196,7 @@ public class MergeMojo extends AbstractMojo {
 			} else if (!sourceDir.canRead()) {
 				getLog().warn("The source directory: " + sourceDir.getAbsolutePath() + " can not be read, it wil not be included in the scanned directories");
 			} else if (!sourceDir.isDirectory()) {
-				getLog()
-						.warn("The source directory: " + sourceDir.getAbsolutePath() + " is not a directory, it wil not be included in the scanned directories");
+				getLog().warn("The source directory: " + sourceDir.getAbsolutePath() + " is not a directory, it wil not be included in the scanned directories");
 			} else {
 				processSourceDirectory(sourceDir, merge);
 			}
