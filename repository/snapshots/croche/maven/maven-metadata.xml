@@ -11,5 +11,10 @@
       <prefix>custom-version</prefix>
       <artifactId>maven-custom-version-plugin</artifactId>
     </plugin>
+    <plugin>
+      <name>maven-jira-management-plugin</name>
+      <prefix>jira-management</prefix>
+      <artifactId>maven-jira-management-plugin</artifactId>
+    </plugin>
   </plugins>
 </metadata>
