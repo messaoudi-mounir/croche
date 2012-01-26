@@ -17,6 +17,7 @@ import java.net.URL;
 
 import javax.xml.rpc.ServiceException;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,6 +27,7 @@ import org.apache.maven.settings.Settings;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
 import com.atlassian.jira.rpc.soap.client.JiraSoapServiceServiceLocator;
+import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
 /**
  * The AbstractJiraMojo represents a base class for a maven mojo, adapted from
@@ -48,9 +50,9 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 
 	/**
 	 * Server's id in settings.xml to look up username and password.
-	 * @parameter expression="${settingsKey}"
+	 * @parameter expression="${jiraSettingsKey}"
 	 */
-	private String settingsKey;
+	private String jiraSettingsKey;
 
 	/**
 	 * JIRA Installation URL. If not informed, it will use the
@@ -72,12 +74,6 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	 */
 	protected String jiraPassword;
 
-	/**
-	 * JIRA Project Key.
-	 * @parameter expression="${jiraProjectKey}"
-	 */
-	protected String jiraProjectKey;
-
 	transient JiraSoapService jiraService;
 
 	/**
@@ -85,6 +81,21 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	 * @parameter expression="${skip}"
 	 */
 	protected boolean skip;
+
+	/**
+	 * @parameter expression="${projectVersion}" default-value="${project.version}"
+	 * @readonly
+	 * @required
+	 */
+	String projectVersion;
+
+	/**
+	 * @parameter expression="${session}"
+	 * @readonly
+	 * @required
+	 * @since 2.0
+	 */
+	MavenSession session;
 
 	/**
 	 * Returns the stub needed to invoke the WebService
@@ -123,7 +134,6 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 				if (lastPath == -1) {
 					lastPath = this.jiraURL.length();
 				}
-				this.jiraProjectKey = this.jiraURL.substring(projectIdx + 8, lastPath);
 				url = this.jiraURL.substring(0, projectIdx) + JIRA_SOAP_SUFFIX;
 			} else {
 				url = this.jiraURL + JIRA_SOAP_SUFFIX;
@@ -137,11 +147,11 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	 * properties
 	 */
 	void loadUserInfoFromSettings() {
-		if (this.settingsKey == null) {
-			this.settingsKey = this.jiraURL;
+		if (this.jiraSettingsKey == null) {
+			this.jiraSettingsKey = this.jiraURL;
 		}
 		if ((this.jiraUser == null || this.jiraPassword == null) && (this.settings != null)) {
-			Server server = this.settings.getServer(this.settingsKey);
+			Server server = this.settings.getServer(this.jiraSettingsKey);
 
 			if (server != null) {
 				if (this.jiraUser == null) {
@@ -188,19 +198,19 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	public abstract void doExecute(JiraSoapService jiraService, String loginToken) throws Exception;
 
 	/**
-	 * This gets the settingsKey
-	 * @return the settingsKey
+	 * This gets the jiraSettingsKey
+	 * @return the jiraSettingsKey
 	 */
-	public String getSettingsKey() {
-		return this.settingsKey;
+	public String getJiraSettingsKey() {
+		return this.jiraSettingsKey;
 	}
 
 	/**
-	 * This sets the settingsKey
-	 * @param settingsKey the settingsKey to set
+	 * This sets the jiraSettingsKey
+	 * @param jiraSettingsKey the jiraSettingsKey to set
 	 */
-	public void setSettingsKey(String settingsKey) {
-		this.settingsKey = settingsKey;
+	public void setJiraSettingsKey(String jiraSettingsKey) {
+		this.jiraSettingsKey = jiraSettingsKey;
 	}
 
 	/**
@@ -252,22 +262,6 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	}
 
 	/**
-	 * This gets the jiraProjectKey
-	 * @return the jiraProjectKey
-	 */
-	public String getJiraProjectKey() {
-		return this.jiraProjectKey;
-	}
-
-	/**
-	 * This sets the jiraProjectKey
-	 * @param jiraProjectKey the jiraProjectKey to set
-	 */
-	public void setJiraProjectKey(String jiraProjectKey) {
-		this.jiraProjectKey = jiraProjectKey;
-	}
-
-	/**
 	 * This gets the skip
 	 * @return the skip
 	 */
@@ -281,6 +275,56 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	 */
 	public void setSkip(boolean skip) {
 		this.skip = skip;
+	}
+
+	/**
+	 * This gets the projectVersion
+	 * @return the projectVersion
+	 */
+	public String getProjectVersion() {
+		return this.projectVersion;
+	}
+
+	/**
+	 * This sets the projectVersion
+	 * @param projectVersion the projectVersion to set
+	 */
+	public void setProjectVersion(String projectVersion) {
+		this.projectVersion = projectVersion;
+	}
+
+	/**
+	 * Check if version is already present
+	 * @param versions The versions to check against
+	 * @param version The version to check against
+	 * @return True if it exists
+	 */
+	boolean isVersionAlreadyPresent(RemoteVersion[] versions, String version) {
+		if (versions == null) {
+			return false;
+		}
+		boolean versionExists = getExistingVersion(versions, version) != null;
+		return versionExists;
+	}
+
+	/**
+	 * This gets the existing version matching the given array of versions
+	 * @param versions the versions to check
+	 * @param version The version name to match against
+	 * @return The matching version or null if none matched
+	 */
+	RemoteVersion getExistingVersion(RemoteVersion[] versions, String version) {
+		RemoteVersion existingVersion = null;
+		if (versions != null) {
+			// Creating new Version (if not already created)
+			for (RemoteVersion remoteVersion : versions) {
+				if (remoteVersion.getName().equalsIgnoreCase(version)) {
+					existingVersion = remoteVersion;
+					break;
+				}
+			}
+		}
+		return existingVersion;
 	}
 
 }
