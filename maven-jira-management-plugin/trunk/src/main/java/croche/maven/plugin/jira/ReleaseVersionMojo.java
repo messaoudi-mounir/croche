@@ -95,20 +95,23 @@ public class ReleaseVersionMojo extends AbstractJiraMojo {
 		Log log = getLog();
 		log.info("ReleaseVersionMojo current projectVersion: " + this.projectVersion);
 
+		JiraVersionManager versionManager = new JiraVersionManager(jiraService, loginToken, getLog());
+		JiraVersionSpec versionSpec = new JiraVersionSpec();
+		versionSpec.setExistingVersion(this.projectVersion);
+		versionSpec.setJiraProjectKey(this.jiraProjectKey);
+		versionSpec.setJiraVersionPrefix(this.jiraVersionPrefix);
+		versionSpec.setNextVersionGroup(this.nextVersionGroup);
+		versionSpec.setNextVersionRegex(this.nextVersionRegex);
+		versionSpec.setNextVersionReplacement(this.nextVersionReplacement);
+		versionSpec.setMaxIssuesToUpdate(this.maxIssuesToUpdate);
+		versionSpec.setVersionType(this.versionType);
+
 		if (this.projectVersion.contains("SNAPSHOT")) {
-			log.info("ReleaseVersionMojo not releasing jira version as projectVersion: " + this.projectVersion + " is a snapshot");
+			log.info("ReleaseVersionMojo not releasing jira version as projectVersion: " + this.projectVersion
+					+ " is a snapshot, however matching jira version will be created if necessary");
+			versionManager.optionallyCreateVersion(versionSpec);
 		} else {
 
-			JiraVersionManager versionManager = new JiraVersionManager(jiraService, loginToken, getLog());
-			JiraVersionSpec versionSpec = new JiraVersionSpec();
-			versionSpec.setExistingVersion(this.projectVersion);
-			versionSpec.setJiraProjectKey(this.jiraProjectKey);
-			versionSpec.setJiraVersionPrefix(this.jiraVersionPrefix);
-			versionSpec.setNextVersionGroup(this.nextVersionGroup);
-			versionSpec.setNextVersionRegex(this.nextVersionRegex);
-			versionSpec.setNextVersionReplacement(this.nextVersionReplacement);
-			versionSpec.setMaxIssuesToUpdate(this.maxIssuesToUpdate);
-			versionSpec.setVersionType(this.versionType);
 			versionManager.releaseVersion(versionSpec);
 		}
 
