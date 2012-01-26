@@ -26,6 +26,10 @@ public final class VersionGeneratorFactory {
 		super();
 	}
 
+	/**
+	 * This creates an instance of a version generator
+	 * @return The version generator
+	 */
 	public static final VersionGenerator createVersionGenerator() {
 		return new VersionGeneratorImpl();
 	}
