@@ -335,6 +335,7 @@ public class JiraVersionSpec {
 				break;
 			case V_3D_BRANCH_AWARE:
 				gen = new Increment3DBNextVersionGenerator(branch);
+				break;
 			default:
 				throw new IllegalArgumentException("Invalid version type: " + versionType);
 		}
