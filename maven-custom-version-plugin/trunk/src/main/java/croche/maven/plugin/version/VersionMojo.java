@@ -35,42 +35,55 @@ public class VersionMojo extends AbstractMojo {
 	 * @readonly
 	 */
 	MavenProject project;
-	
+
 	/**
 	 * @parameter
 	 * @required
 	 */
 	VersionConfig versionConfig;
-	
+
 	/**
-     * @parameter expression="${session}"
-     * @readonly
-     * @required
-     * @since 2.0
-     */
-    protected MavenSession session;
-	
-	/** 
+	 * @parameter expression="${session}"
+	 * @readonly
+	 * @required
+	 * @since 2.0
+	 */
+	protected MavenSession session;
+
+	/**
+	 * SCM Connection URL. If not informed, it will use the
+	 * project.scm.connection info.
+	 * @parameter expression="${scmConnection}" default-value="${project.scm.connection}"
+	 * @required
+	 */
+	protected String scmConnection;
+
+	/**
 	 * {@inheritDoc}
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
+
 		// get the current version of the artifact being released
 		String currentVersion = this.project.getVersion();
+
+		boolean isBranch = this.scmConnection != null && this.scmConnection.contains("branches");
+		getLog().info("VersionMojo current projectVersion: " + currentVersion + ", scmConnection: " + this.scmConnection);
+
 		// get the version generator
 		VersionGenerator versionGen = VersionGeneratorFactory.createVersionGenerator();
-		String releaseVersion = versionGen.generateReleaseVersion(this.versionConfig, currentVersion);
+		String releaseVersion = versionGen.generateReleaseVersion(this.versionConfig, currentVersion, isBranch);
 		// set the system property for the release plugin
-		if(releaseVersion != null){
+		if (releaseVersion != null) {
 			getLog().info("Setting sys & exec env property releaseVersion to: " + releaseVersion);
 			System.setProperty("releaseVersion", releaseVersion);
 			this.session.getExecutionProperties().setProperty("releaseVersion", releaseVersion);
 		} else {
 			getLog().info("Not setting releaseVersion.");
 		}
-		String developmentVersion = versionGen.generateDevelopmentVersion(this.versionConfig, currentVersion);
+		String developmentVersion = versionGen.generateDevelopmentVersion(this.versionConfig, currentVersion, isBranch);
 		// set the system property for the release plugin
-		if(developmentVersion != null){
+		if (developmentVersion != null) {
 			getLog().info("Setting sys & exec env property developmentVersion to: " + developmentVersion);
 			System.setProperty("developmentVersion", developmentVersion);
 			this.session.getExecutionProperties().setProperty("developmentVersion", developmentVersion);
@@ -78,5 +91,5 @@ public class VersionMojo extends AbstractMojo {
 			getLog().info("Not setting developmentVersion.");
 		}
 	}
-	
+
 }

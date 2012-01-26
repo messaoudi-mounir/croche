@@ -26,9 +26,15 @@ public class VersionGeneratorImpl implements VersionGenerator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see croche.maven.plugin.version.VersionGenerator#generateDevelopmentVersion(croche.maven.plugin.version.VersionConfig, java.lang.String)
+	 * @see croche.maven.plugin.version.VersionGenerator#generateDevelopmentVersion(croche.maven.plugin.version.VersionConfig, java.lang.String, boolean)
 	 */
-	public String generateDevelopmentVersion(VersionConfig config, String currentVersion) {
+	public String generateDevelopmentVersion(VersionConfig config, String currentVersion, boolean branch) {
+		if ("3db".equalsIgnoreCase(config.getDevVersionType())) {
+			config.setDevVersionRegex(".*(\\d+)[^0-9]+(\\d+)[^0-9]+(\\d+).*");
+			int groupNum = branch ? 3 : 2;
+			config.setDevVersionGroup(groupNum);
+		}
+
 		if (config.getDevVersionRegex() != null && config.getDevVersionRegex().length() > 0) {
 			if (config.getDevVersionGroup() < 1) {
 				throw new IllegalArgumentException("The dev version group index must be >= 1");
@@ -40,9 +46,9 @@ public class VersionGeneratorImpl implements VersionGenerator {
 
 	/**
 	 * {@inheritDoc}
-	 * @see croche.maven.plugin.version.VersionGenerator#generateReleaseVersion(croche.maven.plugin.version.VersionConfig, java.lang.String)
+	 * @see croche.maven.plugin.version.VersionGenerator#generateReleaseVersion(croche.maven.plugin.version.VersionConfig, java.lang.String, boolean)
 	 */
-	public String generateReleaseVersion(VersionConfig config, String currentVersion) {
+	public String generateReleaseVersion(VersionConfig config, String currentVersion, boolean branch) {
 		if (config.getReleaseVersionRegex() != null && config.getReleaseVersionRegex().length() > 0) {
 			if (config.getReleaseVersionGroup() < 1) {
 				throw new IllegalArgumentException("The release version group index must be >= 1");
@@ -78,7 +84,7 @@ public class VersionGeneratorImpl implements VersionGenerator {
 					String groupText = matcher.group(i).trim();
 					if (i == group) {
 						// replace the group with the replacement text
-						if(replacement.equals(VersionConfig.INCREMENT)){
+						if (replacement.equals(VersionConfig.INCREMENT)) {
 							int nextVersion = -1;
 							try {
 								nextVersion = Integer.parseInt(groupText) + 1;
@@ -87,12 +93,12 @@ public class VersionGeneratorImpl implements VersionGenerator {
 										+ " was not a valid integer and could not be incremented.");
 							}
 							sb.append(nextVersion);
-						} else if(replacement.equals(VersionConfig.GROUP_TEXT)){
+						} else if (replacement.equals(VersionConfig.GROUP_TEXT)) {
 							sb.append(groupText);
 						} else {
 							sb.append(replacement);
 						}
-						
+
 					} else {
 						sb.append(groupText);
 					}
