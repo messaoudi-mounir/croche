@@ -14,8 +14,8 @@ package croche.maven.plugin.jira;
 
 import org.apache.maven.plugin.logging.Log;
 
-import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
+import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 
 /**
  * The SyncVersionMojo represents a maven mojo that syncs the version of the project being released
@@ -29,19 +29,18 @@ import com.atlassian.jira.rpc.soap.client.JiraSoapService;
 public class SyncVersionMojo extends AbstractJiraMojo {
 
 	/**
-	 * This is the optional version prefix to prefix the maven component version with
-	 * @parameter expression="${versionPrefix}" default-value=""
+	 * JIRA Project Key.
+	 * @parameter expression="${jiraProjectKey}"
 	 */
-	String versionPrefix;
+	String jiraProjectKey;
 
 	/**
-	 * @parameter expression="${projectVersion}" default-value="${project.version}"
-	 * @readonly
-	 * @required
+	 * This is the optional version prefix to prefix the jira component version with
+	 * @parameter expression="${jiraVersionPrefix}" default-value=""
 	 */
-	String projectVersion;
-	
-	/** 
+	String jiraVersionPrefix;
+
+	/**
 	 * {@inheritDoc}
 	 * @see croche.maven.plugin.jira.AbstractJiraMojo#doExecute(com.atlassian.jira.rpc.soap.client.JiraSoapService, java.lang.String)
 	 */
@@ -50,9 +49,9 @@ public class SyncVersionMojo extends AbstractJiraMojo {
 
 		// get the name of the version to use for this project
 		String projectVersion = getProjectVersion().replace("-SNAPSHOT", "");
-		
-		String jiraVersion = getVersionPrefix() + projectVersion;
-		
+
+		String jiraVersion = getJiraVersionPrefix() + projectVersion;
+
 		Log log = getLog();
 		RemoteVersion[] versions = jiraService.getVersions(loginToken, this.jiraProjectKey);
 
@@ -69,55 +68,19 @@ public class SyncVersionMojo extends AbstractJiraMojo {
 	}
 
 	/**
-	 * This gets the versionPrefix
-	 * @return the versionPrefix
+	 * This gets the jiraVersionPrefix
+	 * @return the jiraVersionPrefix
 	 */
-	public String getVersionPrefix() {
-		return this.versionPrefix.replace("#space", " ");
+	public String getJiraVersionPrefix() {
+		return this.jiraVersionPrefix.replace("#space", " ");
 	}
 
 	/**
-	 * This sets the versionPrefix
-	 * @param versionPrefix the versionPrefix to set
+	 * This sets the jiraVersionPrefix
+	 * @param jiraVersionPrefix the jiraVersionPrefix to set
 	 */
-	public void setVersionPrefix(String versionPrefix) {
-		this.versionPrefix = versionPrefix;
-	}
-
-	/**
-	 * This gets the projectVersion
-	 * @return the projectVersion
-	 */
-	public String getProjectVersion() {
-		return this.projectVersion;
-	}
-
-	/**
-	 * This sets the projectVersion
-	 * @param projectVersion the projectVersion to set
-	 */
-	public void setProjectVersion(String projectVersion) {
-		this.projectVersion = projectVersion;
-	}
-	
-	/**
-	 * Check if version is already present
-	 * @param versions The versions to check against
-	 * @param version The version to check against
-	 * @return True if it exists
-	 */
-	boolean isVersionAlreadyPresent(RemoteVersion[] versions, String version) {
-		boolean versionExists = false;
-		if (versions != null) {
-			// Creating new Version (if not already created)
-			for (RemoteVersion remoteVersion : versions) {
-				if (remoteVersion.getName().equalsIgnoreCase(version)) {
-					versionExists = true;
-					break;
-				}
-			}
-		}
-		return versionExists;
+	public void setJiraVersionPrefix(String jiraVersionPrefix) {
+		this.jiraVersionPrefix = jiraVersionPrefix;
 	}
 
 }
