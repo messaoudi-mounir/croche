@@ -325,7 +325,10 @@ public class JiraVersionSpec {
 		}
 
 		if (gen != null) {
-			return gen.generateNextVersion(getExistingVersion());
+			String nextVersion = gen.generateNextVersion(getExistingVersion());
+			if (nextVersion != null) {
+				return nextVersion.replace("-SNAPSHOT", "");
+			}
 		}
 		return null;
 	}
