@@ -47,10 +47,11 @@ public class SyncVersionMojo extends AbstractJiraMojo {
 	@Override
 	public void doExecute(JiraSoapService jiraService, String loginToken) throws Exception {
 
-		// get the name of the version to use for this project
-		String projectVersion = getProjectVersion().replace("-SNAPSHOT", "");
+		JiraVersionSpec versionSpec = new JiraVersionSpec();
+		versionSpec.setExistingVersion(getProjectVersion());
+		versionSpec.setJiraVersionPrefix(getJiraVersionPrefix());
 
-		String jiraVersion = getJiraVersionPrefix() + projectVersion;
+		String jiraVersion = versionSpec.generateCurrentJiraVersion();
 
 		Log log = getLog();
 		RemoteVersion[] versions = jiraService.getVersions(loginToken, this.jiraProjectKey);
