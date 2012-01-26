@@ -128,8 +128,8 @@ public class JiraVersionSpec {
 	Integer maxIssuesToUpdate;
 
 	/**
-	 * This is the existing version
-	 * @return the existingVersion
+	 * This is the existing project version
+	 * @return This is the existing project version
 	 */
 	public String getExistingVersion() {
 		return this.existingVersion;
@@ -293,10 +293,22 @@ public class JiraVersionSpec {
 	}
 
 	/**
+	 * This generates the jira version based on the existing project version and jira version prefix
+	 * @return The jira version corresponding to the project version
+	 */
+	public String generateCurrentJiraVersion() {
+		if (this.getExistingVersion() != null) {
+			String jiraVersion = this.getJiraVersionPrefix() + this.getExistingVersion().replace("-SNAPSHOT", "");
+			return jiraVersion;
+		}
+		return null;
+	}
+
+	/**
 	 * This generates the next version for the existing version using the configured version type settings
 	 * @return The next version string or null if there is no next version
 	 */
-	public String generateNextVersion() {
+	public String generateNextJiraVersion() {
 
 		VERSION_TYPE versionType = VERSION_TYPE.forValue(getVersionType());
 		if (versionType == null) {
@@ -325,9 +337,10 @@ public class JiraVersionSpec {
 		}
 
 		if (gen != null) {
-			String nextVersion = gen.generateNextVersion(getExistingVersion());
-			if (nextVersion != null) {
-				return getJiraVersionPrefix() + nextVersion.replace("-SNAPSHOT", "");
+			String nextProjectVersion = gen.generateNextVersion(getExistingVersion());
+			if (nextProjectVersion != null) {
+				String nextJiraVersion = this.getJiraVersionPrefix() + nextProjectVersion.replace("-SNAPSHOT", "");
+				return nextJiraVersion;
 			}
 		}
 		return null;

@@ -194,8 +194,9 @@ public class JiraVersionManager {
 	 * @throws java.rmi.RemoteException If an error occurred creating the version
 	 */
 	public RemoteVersion optionallyCreateVersion(JiraVersionSpec versionSpec) throws RemoteException, java.rmi.RemoteException {
+		String releaseJiraVersion = versionSpec.generateCurrentJiraVersion();
 		RemoteVersion[] versions = this.jiraService.getVersions(this.loginToken, versionSpec.getJiraProjectKey());
-		RemoteVersion version = optionallyCreateVersion(versionSpec.getJiraProjectKey(), versions, versionSpec.getExistingVersion());
+		RemoteVersion version = optionallyCreateVersion(versionSpec.getJiraProjectKey(), versions, releaseJiraVersion);
 		return version;
 	}
 
@@ -210,15 +211,13 @@ public class JiraVersionManager {
 		RemoteVersion[] versions = this.jiraService.getVersions(this.loginToken, versionSpec.getJiraProjectKey());
 
 		// create if needed and then release the jira version corresponding to the jira version
-		String projectVersion = versionSpec.getExistingVersion().replace("-SNAPSHOT", "");
-		String releaseJiraVersion = versionSpec.getJiraVersionPrefix() + projectVersion;
+		String releaseJiraVersion = versionSpec.generateCurrentJiraVersion();
 		RemoteVersion releaseVersion = releaseVersion(versionSpec.getJiraProjectKey(), versions, releaseJiraVersion);
 
 		// move any issues from the version just released to the next version
-		String nextProjectVersion = versionSpec.generateNextVersion();
-		if (nextProjectVersion != null) {
+		String nextJiraVersion = versionSpec.generateNextJiraVersion();
+		if (nextJiraVersion != null) {
 			// create the next jira version and move any issues from the old version to the new one
-			String nextJiraVersion = versionSpec.getJiraVersionPrefix() + nextProjectVersion.replace("-SNAPSHOT", "");
 			RemoteVersion nextVersion = optionallyCreateVersion(versionSpec.getJiraProjectKey(), versions, nextJiraVersion);
 			if (nextVersion.isReleased()) {
 				this.log.warn("The next jira version: " + nextVersion + " is already released, not moving issues to it");
@@ -233,7 +232,7 @@ public class JiraVersionManager {
 			}
 
 		} else {
-			this.log.info("Not creating next jira version and moving any issues from prev version as no nextVersionRegex was specified.");
+			this.log.info("Not creating next jira version and moving any issues from prev version as no nextVersion was configured.");
 		}
 	}
 
