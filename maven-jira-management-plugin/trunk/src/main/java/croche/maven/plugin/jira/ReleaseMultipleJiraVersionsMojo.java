@@ -48,8 +48,10 @@ public class ReleaseMultipleJiraVersionsMojo extends AbstractJiraMojo {
 	@Override
 	public void doExecute(JiraSoapService jiraService, String loginToken) throws Exception {
 
+		boolean isBranch = this.scmConnection != null && this.scmConnection.contains("branches");
+
 		Log log = getLog();
-		log.info("ReleaseMultipleJiraVersionsMojo current projectVersion: " + this.projectVersion);
+		log.info("ReleaseMultipleJiraVersionsMojo current projectVersion: " + this.projectVersion + ", scmConnection: " + this.scmConnection);
 
 		if (this.projectVersion.contains("SNAPSHOT") && !this.executeForSnapshot) {
 			log.info("ReleaseMultipleJiraVersionsMojo not releasing jira versions as projectVersion: " + this.projectVersion
@@ -60,7 +62,7 @@ public class ReleaseMultipleJiraVersionsMojo extends AbstractJiraMojo {
 
 			JiraVersionManager versionManager = new JiraVersionManager(jiraService, loginToken, getLog());
 			for (JiraVersionSpec versionSpec : this.jiraVersionSpecs) {
-				versionManager.releaseVersion(versionSpec);
+				versionManager.releaseVersion(versionSpec, isBranch);
 			}
 
 		}

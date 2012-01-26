@@ -63,6 +63,14 @@ public abstract class AbstractJiraMojo extends AbstractMojo {
 	protected String jiraURL;
 
 	/**
+	 * SCM Connection URL. If not informed, it will use the
+	 * project.scm.connection info.
+	 * @parameter expression="${scmConnection}" default-value="${project.scm.connection}"
+	 * @required
+	 */
+	protected String scmConnection;
+
+	/**
 	 * JIRA Authentication User.
 	 * @parameter expression="${jiraUser}" default-value="${scmUsername}"
 	 */

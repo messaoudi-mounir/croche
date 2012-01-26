@@ -33,7 +33,8 @@ public class JiraVersionSpec {
 		REGEX("regex"),
 		SPRINT_Y3D("sprint_y3d"),
 		V_2D("2d"),
-		V_3D("3d");
+		V_3D("3d"),
+		V_3D_BRANCH_AWARE("3db");
 
 		final String alias;
 
@@ -306,9 +307,10 @@ public class JiraVersionSpec {
 
 	/**
 	 * This generates the next version for the existing version using the configured version type settings
+	 * @param branch Whether the project version is a branch
 	 * @return The next version string or null if there is no next version
 	 */
-	public String generateNextJiraVersion() {
+	public String generateNextJiraVersion(boolean branch) {
 
 		VERSION_TYPE versionType = VERSION_TYPE.forValue(getVersionType());
 		if (versionType == null) {
@@ -323,8 +325,7 @@ public class JiraVersionSpec {
 				}
 				break;
 			case SPRINT_Y3D:
-				// TODO: make patch incrementation configurable
-				gen = new SprintNextVersionGenerator(false);
+				gen = new SprintNextVersionGenerator(branch);
 				break;
 			case V_2D:
 				gen = new Increment2DNextVersionGenerator();
@@ -332,6 +333,8 @@ public class JiraVersionSpec {
 			case V_3D:
 				gen = new Increment3DNextVersionGenerator();
 				break;
+			case V_3D_BRANCH_AWARE:
+				gen = new Increment3DBNextVersionGenerator(branch);
 			default:
 				throw new IllegalArgumentException("Invalid version type: " + versionType);
 		}
