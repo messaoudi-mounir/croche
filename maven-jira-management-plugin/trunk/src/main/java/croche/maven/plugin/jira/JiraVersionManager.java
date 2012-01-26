@@ -205,9 +205,10 @@ public class JiraVersionManager {
 	 * exist, release it, create the next version and then update existing issues that refer to the release jira version
 	 * to the next version
 	 * @param versionSpec The version release specification
+	 * @param branch Whether this is running for a branch
 	 * @throws java.rmi.RemoteException
 	 */
-	public void releaseVersion(JiraVersionSpec versionSpec) throws java.rmi.RemoteException {
+	public void releaseVersion(JiraVersionSpec versionSpec, boolean branch) throws java.rmi.RemoteException {
 		RemoteVersion[] versions = this.jiraService.getVersions(this.loginToken, versionSpec.getJiraProjectKey());
 
 		// create if needed and then release the jira version corresponding to the jira version
@@ -215,7 +216,7 @@ public class JiraVersionManager {
 		RemoteVersion releaseVersion = releaseVersion(versionSpec.getJiraProjectKey(), versions, releaseJiraVersion);
 
 		// move any issues from the version just released to the next version
-		String nextJiraVersion = versionSpec.generateNextJiraVersion();
+		String nextJiraVersion = versionSpec.generateNextJiraVersion(branch);
 		if (nextJiraVersion != null) {
 			// create the next jira version and move any issues from the old version to the new one
 			RemoteVersion nextVersion = optionallyCreateVersion(versionSpec.getJiraProjectKey(), versions, nextJiraVersion);
