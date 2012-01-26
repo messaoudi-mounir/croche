@@ -187,6 +187,19 @@ public class JiraVersionManager {
 	}
 
 	/**
+	 * This optionally creates a jira version
+	 * @param versionSpec The version specification
+	 * @return The created or existing version
+	 * @throws RemoteException If an error occurred creating the version
+	 * @throws java.rmi.RemoteException If an error occurred creating the version
+	 */
+	public RemoteVersion optionallyCreateVersion(JiraVersionSpec versionSpec) throws RemoteException, java.rmi.RemoteException {
+		RemoteVersion[] versions = this.jiraService.getVersions(this.loginToken, versionSpec.getJiraProjectKey());
+		RemoteVersion version = optionallyCreateVersion(versionSpec.getJiraProjectKey(), versions, versionSpec.getExistingVersion());
+		return version;
+	}
+
+	/**
 	 * This will use the given version spec to release a jira version, it will create the existing version if it doesnt
 	 * exist, release it, create the next version and then update existing issues that refer to the release jira version
 	 * to the next version
