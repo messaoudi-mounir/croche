@@ -28,13 +28,6 @@ import com.atlassian.jira.rpc.soap.client.JiraSoapService;
 public class ReleaseMultipleJiraVersionsMojo extends AbstractJiraMojo {
 
 	/**
-	 * This is the whether to mojo should run if the project version of the project running it is a snapshot,
-	 * default is false, e.g. normally you would not want to release jira versions if not doing a release
-	 * @parameter expression="${executeForSnapshot}" default-value="false"
-	 */
-	boolean executeForSnapshot = false;
-
-	/**
 	 * This defines the verions that should be released
 	 * @parameter expression="${jiraVersionSpecs}"
 	 * @required
@@ -52,15 +45,18 @@ public class ReleaseMultipleJiraVersionsMojo extends AbstractJiraMojo {
 
 		Log log = getLog();
 		log.info("ReleaseMultipleJiraVersionsMojo current projectVersion: " + this.projectVersion + ", scmConnection: " + this.scmConnection);
+		JiraVersionManager versionManager = new JiraVersionManager(jiraService, loginToken, getLog());
 
-		if (this.projectVersion.contains("SNAPSHOT") && !this.executeForSnapshot) {
-			log.info("ReleaseMultipleJiraVersionsMojo not releasing jira versions as projectVersion: " + this.projectVersion
-					+ " is a snapshot and executeForSnapshot configuration is false");
-		} else if (this.jiraVersionSpecs == null || this.jiraVersionSpecs.length == 0) {
+		if (this.jiraVersionSpecs == null || this.jiraVersionSpecs.length == 0) {
 			log.warn("ReleaseMultipleJiraVersionsMojo not releasing jira versions as no versions were configured in the configuration.");
+		} else if (this.projectVersion.contains("SNAPSHOT")) {
+			log.info("ReleaseMultipleJiraVersionsMojo not releasing jira versions as projectVersion: " + this.projectVersion
+					+ " is a snapshot but will create any existing versions if necessary");
+			for (JiraVersionSpec versionSpec : this.jiraVersionSpecs) {
+				versionManager.optionallyCreateVersion(versionSpec);
+			}
 		} else {
 
-			JiraVersionManager versionManager = new JiraVersionManager(jiraService, loginToken, getLog());
 			for (JiraVersionSpec versionSpec : this.jiraVersionSpecs) {
 				versionManager.releaseVersion(versionSpec, isBranch);
 			}
