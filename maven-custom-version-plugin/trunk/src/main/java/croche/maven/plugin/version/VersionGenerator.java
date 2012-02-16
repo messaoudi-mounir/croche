@@ -27,8 +27,9 @@ public interface VersionGenerator {
 	 * @param currentVersion The current version of the artifact being released
 	 * @param branch Whether project is a branch
 	 * @return The release version or null if the config does not require a custom release version to be generated.
+	 * @throws InvalidVersionException if the current version is not valid
 	 */
-	public String generateReleaseVersion(VersionConfig config, String currentVersion, boolean branch);
+	public String generateReleaseVersion(VersionConfig config, String currentVersion, boolean branch) throws InvalidVersionException;
 
 	/**
 	 * This generates the development version e.g. the next version post release from the given
@@ -37,7 +38,8 @@ public interface VersionGenerator {
 	 * @param currentVersion The current version of the artifact being released
 	 * @param branch Whether project is a branch
 	 * @return The development version or null if the config does not require a custom development version to be generated.
+	 * @throws InvalidVersionException if the current version is not valid
 	 */
-	public String generateDevelopmentVersion(VersionConfig config, String currentVersion, boolean branch);
+	public String generateDevelopmentVersion(VersionConfig config, String currentVersion, boolean branch) throws InvalidVersionException;
 
 }

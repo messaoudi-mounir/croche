@@ -70,25 +70,29 @@ public class VersionMojo extends AbstractMojo {
 		boolean isBranch = this.scmConnection != null && this.scmConnection.contains("branches");
 		getLog().info("VersionMojo current projectVersion: " + currentVersion + ", scmConnection: " + this.scmConnection);
 
-		// get the version generator
-		VersionGenerator versionGen = VersionGeneratorFactory.createVersionGenerator();
-		String releaseVersion = versionGen.generateReleaseVersion(this.versionConfig, currentVersion, isBranch);
-		// set the system property for the release plugin
-		if (releaseVersion != null) {
-			getLog().info("Setting sys & exec env property releaseVersion to: " + releaseVersion);
-			System.setProperty("releaseVersion", releaseVersion);
-			this.session.getExecutionProperties().setProperty("releaseVersion", releaseVersion);
-		} else {
-			getLog().info("Not setting releaseVersion.");
-		}
-		String developmentVersion = versionGen.generateDevelopmentVersion(this.versionConfig, currentVersion, isBranch);
-		// set the system property for the release plugin
-		if (developmentVersion != null) {
-			getLog().info("Setting sys & exec env property developmentVersion to: " + developmentVersion);
-			System.setProperty("developmentVersion", developmentVersion);
-			this.session.getExecutionProperties().setProperty("developmentVersion", developmentVersion);
-		} else {
-			getLog().info("Not setting developmentVersion.");
+		try {
+			// get the version generator
+			VersionGenerator versionGen = VersionGeneratorFactory.createVersionGenerator();
+			String releaseVersion = versionGen.generateReleaseVersion(this.versionConfig, currentVersion, isBranch);
+			// set the system property for the release plugin
+			if (releaseVersion != null) {
+				getLog().info("Setting sys & exec env property releaseVersion to: " + releaseVersion);
+				System.setProperty("releaseVersion", releaseVersion);
+				this.session.getExecutionProperties().setProperty("releaseVersion", releaseVersion);
+			} else {
+				getLog().info("Not setting releaseVersion.");
+			}
+			String developmentVersion = versionGen.generateDevelopmentVersion(this.versionConfig, currentVersion, isBranch);
+			// set the system property for the release plugin
+			if (developmentVersion != null) {
+				getLog().info("Setting sys & exec env property developmentVersion to: " + developmentVersion);
+				System.setProperty("developmentVersion", developmentVersion);
+				this.session.getExecutionProperties().setProperty("developmentVersion", developmentVersion);
+			} else {
+				getLog().info("Not setting developmentVersion.");
+			}
+		} catch (InvalidVersionException ive) {
+			throw new MojoFailureException(ive, ive.getMessage(), ive.getMessage());
 		}
 	}
 
