@@ -28,16 +28,25 @@ public class VersionGeneratorImpl implements VersionGenerator {
 	 * {@inheritDoc}
 	 * @see croche.maven.plugin.version.VersionGenerator#generateDevelopmentVersion(croche.maven.plugin.version.VersionConfig, java.lang.String, boolean)
 	 */
-	public String generateDevelopmentVersion(VersionConfig config, String currentVersion, boolean branch) {
+	public String generateDevelopmentVersion(VersionConfig config, String currentVersion, boolean branch) throws InvalidVersionException {
 		if ("3db".equalsIgnoreCase(config.getDevVersionType())) {
-			config.setDevVersionRegex(".*(\\d+)[^0-9]+(\\d+)[^0-9]+(\\d+).*");
+			// check if branch that 3rd digit is NOT 0, check if trunk that 3rd digit IS zero
+			String regex = ".*(\\d+)[^0-9]+(\\d+)[^0-9]+(\\d+).*";
+			int[] parts = getVersionParts(currentVersion, regex);
+			if (parts[2] == 0 && branch) {
+				throw new InvalidVersionException("The current versions 3rd digit is 0 but this is a branch, branches must have a 3rd digit > 0");
+			} else if (parts[2] != 0 && !branch) {
+				throw new InvalidVersionException("The current versions 3rd digit is NOT 0 but this is a trunk, trunk poms must have a 3rd digit = 0");
+			}
+			// set the group to increment, if trunk increment 2nd group, if branch increment 3rd group
+			config.setDevVersionRegex(regex);
 			int groupNum = branch ? 3 : 2;
 			config.setDevVersionGroup(groupNum);
 		}
 
 		if (config.getDevVersionRegex() != null && config.getDevVersionRegex().length() > 0) {
 			if (config.getDevVersionGroup() < 1) {
-				throw new IllegalArgumentException("The dev version group index must be >= 1");
+				throw new InvalidVersionException("The dev version group index must be >= 1");
 			}
 			return replaceVersion(currentVersion, config.getDevVersionGroup(), config.getDevVersionRegex(), config.getDevVersionReplacement());
 		}
@@ -48,17 +57,17 @@ public class VersionGeneratorImpl implements VersionGenerator {
 	 * {@inheritDoc}
 	 * @see croche.maven.plugin.version.VersionGenerator#generateReleaseVersion(croche.maven.plugin.version.VersionConfig, java.lang.String, boolean)
 	 */
-	public String generateReleaseVersion(VersionConfig config, String currentVersion, boolean branch) {
+	public String generateReleaseVersion(VersionConfig config, String currentVersion, boolean branch) throws InvalidVersionException {
 		if (config.getReleaseVersionRegex() != null && config.getReleaseVersionRegex().length() > 0) {
 			if (config.getReleaseVersionGroup() < 1) {
-				throw new IllegalArgumentException("The release version group index must be >= 1");
+				throw new InvalidVersionException("The release version group index must be >= 1");
 			}
 			return replaceVersion(currentVersion, config.getReleaseVersionGroup(), config.getReleaseVersionRegex(), config.getReleaseVersionReplacement());
 		}
 		return null;
 	}
 
-	private String replaceVersion(String currentVersion, int group, String regex, String replacement) {
+	private String replaceVersion(String currentVersion, int group, String regex, String replacement) throws InvalidVersionException {
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(currentVersion);
 		StringBuilder sb = new StringBuilder();
@@ -68,7 +77,7 @@ public class VersionGeneratorImpl implements VersionGenerator {
 			int numGroups = matcher.groupCount();
 			// check the required group is within range of the available groups
 			if (group > numGroups) {
-				throw new IllegalArgumentException("The group index must be between 1 and the number of groups in the regex pattern which is: " + numGroups);
+				throw new InvalidVersionException("The group index must be between 1 and the number of groups in the regex pattern which is: " + numGroups);
 			}
 			int endIndex = -1;
 			for (int i = 1; i <= numGroups; i++) {
@@ -112,7 +121,31 @@ public class VersionGeneratorImpl implements VersionGenerator {
 			}
 			return sb.toString();
 		}
-		throw new IllegalArgumentException("The current version: " + currentVersion + " did not match the regex pattern: " + regex);
+		throw new InvalidVersionException("The current version: " + currentVersion + " did not match the regex pattern: " + regex);
+	}
+
+	int[] getVersionParts(String version, String regex) throws InvalidVersionException {
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(version);
+		if (matcher.matches()) {
+			int numGroups = matcher.groupCount();
+			if (numGroups < 1) {
+				throw new InvalidVersionException("There were no groups in the version string: " + version + " matching the regex: " + regex);
+			}
+			int[] parts = new int[numGroups];
+			for (int i = 1; i <= numGroups; i++) {
+				String groupText = matcher.group(i).trim();
+				try {
+					parts[i - 1] = Integer.parseInt(groupText);
+				} catch (NumberFormatException nfe) {
+					throw new InvalidVersionException("The version: " + version + " group text: " + groupText + " was not an integer for the regex pattern: "
+							+ regex);
+				}
+
+			}
+			return parts;
+		}
+		throw new InvalidVersionException("The version: " + version + " did not match the regex pattern: " + regex);
 	}
 
 }
