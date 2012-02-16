@@ -1,0 +1,45 @@
+  ------
+  Introduction
+  ------
+  croche
+  ------
+  18th April 2011
+  ------
+
+About Maven Custom Version Plugin
+
+  The Maven Custom Version works in conjunction with the Maven Release Plugin to give you custom release and development versions when releasing an artifact.
+  It supports using a regex pattern to choose which portion of a version will get incremented for the next development version.
+  It also allows you to specify a release version that can use system properties as the replacement. 
+  More specific usage instructions can be found on the {{{./usage.html}usage page}}.
+  
+* Basic Custom Version Configuration Example  
+
++---+
+<project>
+  ...
+ <build>
+  <plugins>
+   <plugin>
+	<groupId>croche.maven</groupId>
+	<artifactId>maven-custom-version-plugin</artifactId>
+	<configuration>
+	 <versionConfig>
+	  <devVersionRegex>.*(\d+)[^0-9]+(\d+)[^0-9]+(\d+).*</devVersionRegex>
+	  <devVersionGroup>2</devVersionGroup>
+	 </versionConfig>
+	</configuration>
+   </plugin>
+  </plugins>
+ </build>
+  ...
+</project>
++---+ 
+
+  The example configuration above will increment the middle number in a version string, for example if the current version
+  number is 1.1.0-SNAPSHOT then by default the maven release plugin will increment the last digit so you would end up with
+  1.1.1-SNAPSHOT as the next development version in the POM post release. If however you used the above maven custom version plugin
+  and ran your release with the goals: custom-version:generate-versions release:prepare release:perform then you would end up with
+  the middle digit being incremented so it would become 1.2.0-SNAPSHOT after release. The devVersionGroup has a value as 2 which
+  chooses the 2nd group in the regex pattern as the number to increment. 
+  
