@@ -41,6 +41,15 @@ public class ManifestVersionMojo extends AbstractMojo {
 	protected MavenSession session;
 
 	/**
+	 * This is the min digits in the version code, if there are less digits than this
+	 * in the generated version code then the version code will be right padded with zeros
+	 * so that a version like 2.0 is larger than a patch like 1.5.1
+	 * @parameter default-value="3"
+	 * @required
+	 */
+	protected int minVersionCodeLength;
+
+	/**
 	 * {@inheritDoc}
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
@@ -75,6 +84,12 @@ public class ManifestVersionMojo extends AbstractMojo {
 			char c = versionName.charAt(i);
 			if (Character.isDigit(c)) {
 				code.append(c);
+			}
+		}
+		int numToPad = this.minVersionCodeLength - code.length();
+		if (numToPad > 0) {
+			for (int i = 0; i < numToPad; i++) {
+				code.append('0');
 			}
 		}
 		return code.toString();
