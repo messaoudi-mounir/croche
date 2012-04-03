@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>croche.maven</groupId>
+  <artifactId>maven-android-manifestv-plugin</artifactId>
+  <versioning>
+    <latest>0.2-SNAPSHOT</latest>
+    <versions>
+      <version>0.2-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20120403073628</lastUpdated>
+  </versioning>
+</metadata>
