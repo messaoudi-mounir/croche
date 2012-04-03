@@ -106,6 +106,7 @@ public class ReleaseVersionMojo extends AbstractJiraMojo {
 		versionSpec.setNextVersionReplacement(this.nextVersionReplacement);
 		versionSpec.setMaxIssuesToUpdate(this.maxIssuesToUpdate);
 		versionSpec.setVersionType(this.versionType);
+		versionSpec.setMoveIssuesToNextJiraVersion(this.moveIssuesToNextJiraVersion);
 
 		if (this.projectVersion.contains("SNAPSHOT")) {
 			log.info("ReleaseVersionMojo not releasing jira version as projectVersion: " + this.projectVersion

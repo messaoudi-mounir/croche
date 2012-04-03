@@ -135,7 +135,7 @@ public class JiraVersionManager {
 		int numIssuesUpdated = 0;
 		String prevResultKeys = "";
 		while (true && numIssuesUpdated < maxIssuesToUpdate) {
-			String jqlSearch = "project='" + jiraProjectKey + "' and fixVersion='" + releaseVersion.getName() + "'";
+			String jqlSearch = "project='" + jiraProjectKey + "' and fixVersion='" + releaseVersion.getName() + "' and status = 'Open'";
 			RemoteIssue[] issues = jiraService.getIssuesFromJqlSearch(this.loginToken, jqlSearch, ISSUES_PER_SEARCH);
 			if (issues == null || issues.length == 0) {
 				break;
