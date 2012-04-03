@@ -64,10 +64,12 @@
 			<uniqueVersion>false</uniqueVersion>
 			<url>svn:https://croche.googlecode.com/svn/repository/snapshots</url>
 		</snapshotRepository>
+		<!-- 
 		<site>
 			<id>croche-googlecode</id>
 			<url>svn:https://croche.googlecode.com/svn/docs/maven-android-manifestv-plugin/${project.version}/</url>
 		</site>
+		 -->
 	</distributionManagement>
 
 	<reporting>
