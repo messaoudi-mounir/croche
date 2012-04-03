@@ -65,6 +65,13 @@ public class CopyManifestMojo extends AbstractMojo {
 	protected String encoding;
 
 	/**
+	 * The android version code value to replace with the generated one, default is -1
+	 * @parameter default-value="-1"
+	 * @required
+	 */
+	protected int replaceVersionCode;
+
+	/**
 	 * {@inheritDoc}
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
@@ -97,6 +104,15 @@ public class CopyManifestMojo extends AbstractMojo {
 						}
 					}
 				}
+				// special handling of the manifest version code
+				String origVersionCode = "android:versionCode=\"" + this.replaceVersionCode + "\"";
+				if (line.indexOf(origVersionCode) > -1) {
+					String newVersionCode = this.session.getExecutionProperties().getProperty("manifestVersionCode");
+					if (newVersionCode != null && newVersionCode.trim().length() > 0) {
+						line = line.replace(origVersionCode, "android:versionCode=\"" + newVersionCode + "\"");
+					}
+				}
+
 				// write line out to output file
 				os.write(line.toString().getBytes(this.encoding));
 				os.write(IOUtils.LINE_SEPARATOR.getBytes(this.encoding));
