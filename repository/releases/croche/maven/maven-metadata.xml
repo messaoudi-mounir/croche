@@ -16,5 +16,10 @@
       <prefix>jira-management</prefix>
       <artifactId>maven-jira-management-plugin</artifactId>
     </plugin>
+    <plugin>
+      <name>maven-android-manifestv-plugin</name>
+      <prefix>android-manifestv</prefix>
+      <artifactId>maven-android-manifestv-plugin</artifactId>
+    </plugin>
   </plugins>
 </metadata>
