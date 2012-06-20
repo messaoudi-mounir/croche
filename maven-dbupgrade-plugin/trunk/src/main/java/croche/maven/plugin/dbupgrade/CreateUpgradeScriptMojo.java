@@ -186,7 +186,7 @@ public class CreateUpgradeScriptMojo extends AbstractMojo {
 		// remove existing target dir if it exists
 		File sprintDir = new File(this.targetDir + File.separator + sprint.version);
 		if (!sprintDir.exists()) {
-			sprintDir.mkdir();
+			sprintDir.mkdirs();
 		}
 		FileUtils.cleanDirectory(sprintDir);
 
